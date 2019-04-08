@@ -71,10 +71,9 @@ public class MyServer extends NanoHTTPD {
     @Override
     public Response serve(IHTTPSession session) {
         String answer = "";
+        String uri = session.getUri();
         try {
 
-
-            String uri = session.getUri();
             File rootDir = Environment.getExternalStorageDirectory();
             File[] filesList = null;
             String filepath = "";
@@ -83,20 +82,34 @@ public class MyServer extends NanoHTTPD {
             } else {
                 filepath = uri.trim();
             }
+
             filesList = new File(filepath).listFiles();
             answer = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><title>Http Server-File Transfer</title>";
+
+            /**
+             * if filepath is a File then return InputStream
+             */
+
             if (new File(filepath).isFile()) {
                 FileInputStream fis = new FileInputStream(filepath);
                 String mimeType = getMimeType(filepath);
                 return newChunkedResponse(Response.Status.OK, mimeType, fis);
             }
+
             if (new File(filepath).isDirectory()) {
                 for (File detailsOfFiles : filesList) {
+                    String name = detailsOfFiles.getName();
+                    if (detailsOfFiles.isDirectory()){
+                        name += "/";
+                    }
                     answer += "<a href=\"" + detailsOfFiles.getAbsolutePath()
                             + "\" alt = \"\">"
-                            + detailsOfFiles + "</a><br>";
+                            + name + "</a><br>";
                 }
-            } else {
+            }
+
+            if (filesList.length==0){
+                answer = "<h3>No Files or Folders in this directory</h3>";
             }
             answer += "</head></html>";
         } catch (FileNotFoundException e) {

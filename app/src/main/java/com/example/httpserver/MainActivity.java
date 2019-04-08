@@ -90,8 +90,12 @@ public class MainActivity extends AppCompatActivity {
                     InetAddress inetAddress = enumIpAddr.nextElement();
                     if (!inetAddress.isLoopbackAddress()){
                         info = inetAddress.getHostAddress().toString();
-                        ipTextView.setText("Connect to https://"+info+":"+server.getListeningPort());
-                        return;
+                        if (info.length()<=16){
+                            ipTextView.setText("Connect to https://"+info+":"+server.getListeningPort());
+                            return;
+                        }
+
+
                     }
 
                 }
