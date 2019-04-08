@@ -27,46 +27,7 @@ public class MyServer extends NanoHTTPD {
         Log.d("Server Started", "Listen at port "+PORT  );
     }
 
-//    @Override
-//    public Response serve(IHTTPSession session) {
-//
-//        String msg = "<html><body><h1>Hello server</h1>\n";
-//        String uri = session.getUri().substring(1);
-//        if (uri.equals("raj"))
-//            msg += "<p>We serve " + session.getUri() + " !</p>";
-//        else
-//            msg += "<p> Hello Stranger</p>";
-//
-//        String path = Environment.getExternalStorageDirectory().toString()+"/";
-//        Log.d("Files", "Path: " + path);
-//        File directory = new File(path);
-//        File[] files = directory.listFiles();
-//        Log.d("Files", "Size: "+ files.length);
-//        for (int i = 0; i < files.length; i++)
-//        {
-//            Log.d("Files", "FileName:" + files[i].getName());
-//        }
-//        return newFixedLengthResponse( msg + "</body></html>\n" );
-//
-//
-//    }
-//
-//    @Override
-//    public Response serve(String uri, Method method,
-//                          Map<String, String> header, Map<String, String> parameters,
-//                          Map<String, String> files) {
-//        String answer = "";
-//
-//        FileInputStream fis = null;
-//        try {
-//            fis = new FileInputStream(Environment.getExternalStorageDirectory()
-//                    + "/UCDownloads/Witness.pdf");
-//        } catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//        return newChunkedResponse(Response.Status.OK, "application/pdf", fis);
-//    }
+
 
     @Override
     public Response serve(IHTTPSession session) {

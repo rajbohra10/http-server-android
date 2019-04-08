@@ -1,7 +1,10 @@
 package com.example.httpserver;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Paint;
+import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
@@ -27,8 +30,9 @@ import java.util.Enumeration;
 public class MainActivity extends AppCompatActivity {
 
     private MyServer server;
-    private Button startBtn, stopBtn, showBtn;
+    private Button startBtn, stopBtn;
     private TextView ipTextView;
+    private String address;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
@@ -75,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
     }
 
 
@@ -92,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                         info = inetAddress.getHostAddress().toString();
                         if (info.length()<=16){
                             ipTextView.setText("Connect to https://"+info+":"+server.getListeningPort());
+                            address = "https://"+info+":"+server.getListeningPort();
                             return;
                         }
 
