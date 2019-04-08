@@ -1,7 +1,9 @@
 package com.example.httpserver.server;
 
 import android.os.Environment;
+import android.support.v4.content.MimeTypeFilter;
 import android.util.Log;
+import android.webkit.MimeTypeMap;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -9,6 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.file.Files;
 import java.util.Map;
 
 import javax.net.ssl.SSLEngineResult;
@@ -66,31 +69,46 @@ public class MyServer extends NanoHTTPD {
 //    }
 
     @Override
-    public Response serve(String uri, Method method,
-                          Map<String, String> header, Map<String, String> parameters,
-                          Map<String, String> files) {
-        File rootDir = Environment.getExternalStorageDirectory();
-        File[] filesList = null;
-        String filepath = "";
-        if (uri.trim().equals("/")) {
-            filepath = rootDir + uri.trim();
-        } else {
-            filepath = uri.trim();
-        }
-        filesList = new File(filepath).listFiles();
-        String answer = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><title>sdcard0 - TECNO P5 - WiFi File Transfer Pro</title>";
-        if (new File(filepath).isDirectory()) {
-            for (File detailsOfFiles : filesList) {
-                answer += "<a href=\"" + detailsOfFiles.getAbsolutePath()
-                        + "\" alt = \"\">"
-                        + detailsOfFiles.getAbsolutePath() + "</a><br>";
+    public Response serve(IHTTPSession session) {
+        String answer = "";
+        try {
+
+
+            String uri = session.getUri();
+            File rootDir = Environment.getExternalStorageDirectory();
+            File[] filesList = null;
+            String filepath = "";
+            if (uri.trim().equals("/")) {
+                filepath = rootDir + uri.trim();
+            } else {
+                filepath = uri.trim();
             }
-        } else {
+            filesList = new File(filepath).listFiles();
+            answer = "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\"><title>Http Server-File Transfer</title>";
+            if (new File(filepath).isFile()) {
+                FileInputStream fis = new FileInputStream(filepath);
+                String mimeType = getMimeType(filepath);
+                return newChunkedResponse(Response.Status.OK, mimeType, fis);
+            }
+            if (new File(filepath).isDirectory()) {
+                for (File detailsOfFiles : filesList) {
+                    answer += "<a href=\"" + detailsOfFiles.getAbsolutePath()
+                            + "\" alt = \"\">"
+                            + detailsOfFiles + "</a><br>";
+                }
+            } else {
+            }
+            answer += "</head></html>";
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-        answer += "</head></html>";
         return newFixedLengthResponse(answer);
     }
 
+    private static String getMimeType(String fileUrl) {
+        String extension = MimeTypeMap.getFileExtensionFromUrl(fileUrl);
+        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
+    }
 
 
 }
